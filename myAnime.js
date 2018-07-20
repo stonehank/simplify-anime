@@ -95,6 +95,8 @@
         let _delay = typeof delay === "function" ? delay(i) : delay
         this.animations.push({target: targets[i], delay: _delay})
       }
+      let maxDelay=Math.max.apply(Math,this.animations.map(anim => anim.delay))
+      insDuration+=maxDelay
     }
     this.init()
 
