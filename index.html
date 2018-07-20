@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="./index.css" rel="stylesheet">
+    <script src="myAnime.js"></script>
+</head>
+<body>
+<div id="myAnime">
+    <div id="show">
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+    </div>
+    <div id="basic-control">
+        <button class="play">Play</button>
+        <button class="pause">Pause</button>
+        <button class="reset">Reset</button>
+        <button class="restart">Restart</button>
+        <label for="progress">当前进度</label>
+        <input  id="progress" type="range" min="0" max="100" value="0" />
+    </div>
+    <div>
+        <ul id="adv-control">
+            <li>
+                <label for="reverse">Reverse：</label>
+                <input class="reverse" id="reverse" type="checkbox" />
+            </li>
+            <li>
+                <label for="elasticity">弹性参数：</label>
+                <input id="elasticity" value="500"/>
+                <span>(1~999，越大弹性越大)</span>
+            </li>
+            <li>
+                <label for="seek">定点跳转：</label>
+                <input id="seek" value="200"/>
+                <span id="seekRange">...</span>
+                <button class="seek">seek</button>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    let domTargets=document.querySelectorAll('.square');
+    let progress=document.getElementById("progress");
+    let elasticity=document.getElementById("elasticity");
+    let seekRange=document.getElementById("seekRange");
+
+    let options={
+      targets:domTargets,
+      from:0,
+      to:300,
+      duration:1200,
+      delay:i=>i*100,
+      update:(instance)=>{
+        progress.value=instance.progress
+      },
+      elasticity:()=>parseInt(elasticity.value)
+    }
+
+    let instance=new MyAnime(options)
+    document.querySelector('#basic-control .play').onclick = function(){instance.play()}
+    document.querySelector('#basic-control .pause').onclick = function(){instance.pause()}
+    document.querySelector('#adv-control .reverse').onchange = function(){instance.reverse()}
+    document.querySelector('#basic-control .reset').onclick = function(){instance.reset()}
+    document.querySelector('#basic-control .restart').onclick = function(){instance.restart()}
+    document.querySelector('#adv-control .seek').onclick = function(){
+      let v=parseInt(document.getElementById("seek").value,10)
+      instance.seek(v)
+    }
+    progress.addEventListener('input',function(e){
+      instance.seek(1200 * (e.target.value / 100))
+    })
+    seekRange.innerText=`(0~${options.duration})`
+</script>
+</body>
+</html>
